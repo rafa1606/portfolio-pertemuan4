@@ -2,9 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
-       protected $fillable = ['title', 'content'];
+       use SoftDeletes;
+
+       protected $fillable = ['title', 'content', 'status'];
+
+       // Scope: hanya post yang sudah dipublikasikan
+       public function scopePublished(Builder $query): Builder
+       {
+              return $query->where('status', 'published');
+       }
 }

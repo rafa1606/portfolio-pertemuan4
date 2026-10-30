@@ -3,27 +3,70 @@
 @section('title', 'Daftar Post')
 
 @section('content')
+<div class="page-shell post-page">
+    @if (session('success'))
+    <div class="alert alert-success" role="status">{{ session('success') }}</div>
+    @endif
 
-@if (session('success'))
-    <div class="bg-green-500 text-white p-4 rounded mb-4">{{ session('success') }}</div>
-@endif
-
-<div class="max-w-3xl mx-auto p-6">
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Daftar Post</h1>
-        <a href="{{ route('posts.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Create New Post</a>
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">Journal / Posts</p>
+            <h1>Daftar Post</h1>
+        </div>
+        <div class="post-heading-actions">
+            <a href="{{ route('posts.trash') }}" class="button button-outline">Trash</a>
+            <a href="{{ route('posts.create') }}" class="button">Buat Post</a>
+        </div>
     </div>
 
-    @if ($posts->isEmpty())
-        <p class="text-gray-500">Belum ada post.</p>
-    @else
-        <div class="space-y-4">
-            @foreach ($posts as $post)
-                <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200">
-                    <a href="{{ route('posts.show', $post->id) }}" class="text-lg font-semibold text-gray-900 hover:underline">{{ $post->title }}</a>
-                </div>
+    <nav class="post-filters" aria-label="Filter post">
+        <a href="{{ route('posts.index', request()->only('q', 'per_page')) }}" @class(['post-filter', 'active' => request('filter') !== 'published']) aria-current="{{ request('filter') !== 'published' ? 'page' : 'false' }}">Semua</a>
+        <a href="{{ route('posts.index', array_merge(request()->only('q', 'per_page'), ['filter' => 'published'])) }}" @class(['post-filter', 'active' => request('filter') === 'published']) aria-current="{{ request('filter') === 'published' ? 'page' : 'false' }}">Published</a>
+    </nav>
+
+    <form method="GET" action="{{ route('posts.index') }}" style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-bottom:1rem;">
+        @if (request('filter') === 'published')
+        <input type="hidden" name="filter" value="published">
+        @endif
+        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari judul post">
+        <select name="per_page" onchange="this.form.submit()">
+            @foreach ([5, 10, 25] as $size)
+            <option value="{{ $size }}" @selected($posts->perPage() === $size)>{{ $size }} per halaman</option>
             @endforeach
-        </div>
+        </select>
+        <button type="submit" class="button button-small">Cari</button>
+        @if (request('q'))
+        <a href="{{ route('posts.index', request()->only('filter', 'per_page')) }}" class="button button-outline button-small">Reset</a>
+        @endif
+    </form>
+
+    @if ($posts->isEmpty())
+    <div class="empty-state">Tidak ada post yang ditemukan.</div>
+    @else
+    <div class="post-list">
+        @foreach ($posts as $post)
+        <article class="post-card">
+            <div class="post-card-content">
+                <h2><a href="{{ route('posts.show', $post->id) }}">{{ $post->title }}</a></h2>
+                <p class="post-card-meta">No. {{ $posts->firstItem() + $loop->index }} &middot; {{ $post->created_at->format('d M Y') }}</p>
+            </div>
+            <div class="post-card-actions">
+                <span @class(['status-badge', 'status-published' => $post->status === 'published', 'status-draft' => $post->status !== 'published'])>{{ ucfirst($post->status) }}</span>
+                <a href="{{ route('posts.edit', $post->id) }}" class="button button-outline button-small">Edit</a>
+            </div>
+        </article>
+        @endforeach
+    </div>
     @endif
+
+    <div style="margin-top:1rem; font-size:0.875rem;">
+        Halaman : {{ $posts->currentPage() }} dari {{ $posts->lastPage() }} <br>
+        Jumlah Data : {{ $posts->total() }} <br>
+        Data Per Halaman : {{ $posts->perPage() }}
+    </div>
+
+    <div style="margin-top:1rem;">
+        {{ $posts->links() }}
+    </div>
 </div>
 @endsection

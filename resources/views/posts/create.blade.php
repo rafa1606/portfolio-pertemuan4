@@ -9,9 +9,9 @@
         <h1>Tulis Post</h1>
 
         @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert">{{ $error }}</div>
-            @endforeach
+        @foreach ($errors->all() as $error)
+        <div class="alert" role="alert">{{ $error }}</div>
+        @endforeach
         @endif
 
         <form action="{{ route('posts.store') }}" method="POST">
@@ -25,7 +25,17 @@
                 <label class="form-label" for="content">Isi post</label>
                 <textarea name="content" id="content" class="form-input" placeholder="Ceritakan proses, temuan, atau ide kamu..." required>{{ old('content') }}</textarea>
             </div>
-            <button type="submit" class="button" style="margin-top: 24px;">Publikasikan</button>
+            <div class="form-group">
+                <label class="form-label" for="status">Status</label>
+                <select name="status" id="status" class="form-input" required>
+                    <option value="draft" {{ old('status', 'draft') === 'draft' ? 'selected' : '' }}>Draft</option>
+                    <option value="published" {{ old('status') === 'published' ? 'selected' : '' }}>Published</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="button">Simpan Post</button>
+                <a href="{{ route('posts.index') }}" class="button button-outline">Batal</a>
+            </div>
         </form>
     </div>
 </div>

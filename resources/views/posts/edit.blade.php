@@ -3,35 +3,41 @@
 @section('title', 'Edit Post')
 
 @section('content')
-<div class="max-w-2xl mx-auto p-6">
-    <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">Edit Post</h1>
+<div class="page-shell">
+    <div class="form-card">
+        <p class="eyebrow">Journal / Edit</p>
+        <h1>Edit Post</h1>
 
         @if ($errors->any())
         @foreach ($errors->all() as $error)
-        <div class="bg-red-500 text-white p-4 rounded mb-4">{{ $error }}</div>
+        <div class="alert" role="alert">{{ $error }}</div>
         @endforeach
         @endif
 
         <form action="{{ route('posts.update', $post->id) }}" method="POST">
             @csrf
             @method('PUT')
-            <div>
-                <label for="title">Title</label>
-            </div>
-            <div>
+            <div class="form-group">
+                <label class="form-label" for="title">Judul</label>
                 <input type="text" name="title" id="title" value="{{ old('title', $post->title) }}" required
-                    class="border border-gray-300 p-2 rounded w-full">
+                    class="form-input">
             </div>
-            <div>
-                <label for="content">Content</label>
-            </div>
-            <div>
-                <textarea name="content" id="content" class="border border-gray-300 p-2 rounded w-full"
+            <div class="form-group">
+                <label class="form-label" for="content">Isi post</label>
+                <textarea name="content" id="content" class="form-input"
                     required>{{ old('content', $post->content) }}</textarea>
             </div>
-            <button type="submit"
-                class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Submit</button>
+            <div class="form-group">
+                <label class="form-label" for="status">Status</label>
+                <select name="status" id="status" class="form-input" required>
+                    <option value="draft" {{ old('status', $post->status) === 'draft' ? 'selected' : '' }}>Draft</option>
+                    <option value="published" {{ old('status', $post->status) === 'published' ? 'selected' : '' }}>Published</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="button">Simpan Perubahan</button>
+                <a href="{{ route('posts.show', $post->id) }}" class="button button-outline">Batal</a>
+            </div>
         </form>
     </div>
 </div>
