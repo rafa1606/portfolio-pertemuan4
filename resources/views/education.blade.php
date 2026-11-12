@@ -3,7 +3,7 @@
 @section('title', 'Education - Portfolio')
 
 @section('content')
-    <div class="page-shell">
+        <div class="page-shell">
         <p class="eyebrow">02 / Learning path</p>
         <h1>Riwayat Pendidikan</h1>
         <div class="info-card" style="margin-top: 36px; max-width: 760px;">
