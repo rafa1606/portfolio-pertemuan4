@@ -34,6 +34,10 @@
                 </select>
             </div>
             <div class="form-group">
+                <label class="form-label" for="short_description">Deskripsi singkat</label>
+                <input type="text" name="short_description" id="short_description" value="{{ old('short_description', $project->short_description) }}" maxlength="255" class="form-input">
+            </div>
+            <div class="form-group">
                 <label class="form-label" for="description">Deskripsi</label>
                 <textarea name="description" id="description" class="form-input">{{ old('description', $project->description) }}</textarea>
             </div>
@@ -43,6 +47,41 @@
                     <option value="published" @selected(old('status', $project->status) === 'published')>Published</option>
                     <option value="draft" @selected(old('status', $project->status) === 'draft')>Draft</option>
                 </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="project_date">Tanggal project</label>
+                <input type="date" name="project_date" id="project_date" value="{{ old('project_date', $project->project_date?->format('Y-m-d')) }}" class="form-input">
+            </div>
+            <div class="form-group">
+                {{-- checkbox yang tidak dicentang tidak terkirim, jadi old() kosong tidak boleh jatuh ke nilai lama --}}
+                <label class="check-row" for="is_featured">
+                    <input type="checkbox" name="is_featured" id="is_featured" value="1" @checked(session()->hasOldInput() ? old('is_featured') : $project->is_featured)>
+                    <span class="form-label" style="margin:0;">Tampilkan sebagai project unggulan</span>
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="project_url">URL project</label>
+                <input type="url" name="project_url" id="project_url" value="{{ old('project_url', $project->project_url) }}" placeholder="https://" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="repository_url">URL repository</label>
+                <input type="url" name="repository_url" id="repository_url" value="{{ old('repository_url', $project->repository_url) }}" placeholder="https://" class="form-input">
+            </div>
+            <div class="form-group">
+                @php
+                    $dipilih = array_map('intval', session()->hasOldInput()
+                        ? (array) old('technologies', [])
+                        : $project->technologies->pluck('id')->all());
+                @endphp
+                <span class="form-label">Technologies</span>
+                <div class="check-grid">
+                    @foreach ($technologies as $technology)
+                    <label class="check-row">
+                        <input type="checkbox" name="technologies[]" value="{{ $technology->id }}" @checked(in_array($technology->id, $dipilih))>
+                        <span>{{ $technology->name }}</span>
+                    </label>
+                    @endforeach
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label" for="thumbnail">Thumbnail</label>

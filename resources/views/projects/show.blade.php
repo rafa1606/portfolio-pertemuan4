@@ -11,6 +11,25 @@
     <p class="lead">{{ $project->description }}</p>
     @endif
 
+    @if ($project->technologies->isNotEmpty())
+    <div class="tech-list" style="margin-top:22px;">
+        @foreach ($project->technologies as $technology)
+        <span class="tech-badge">{{ $technology->name }}</span>
+        @endforeach
+    </div>
+    @endif
+
+    @if ($project->project_url || $project->repository_url)
+    <div class="project-links">
+        @if ($project->project_url)
+        <a href="{{ $project->project_url }}" class="button" target="_blank" rel="noopener">Lihat Project</a>
+        @endif
+        @if ($project->repository_url)
+        <a href="{{ $project->repository_url }}" class="button button-outline" target="_blank" rel="noopener">Repository</a>
+        @endif
+    </div>
+    @endif
+
     @if ($project->thumbnail)
     <img class="hero-image" src="{{ asset('storage/' . $project->thumbnail) }}" alt="{{ $project->name }}">
     @endif

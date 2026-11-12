@@ -13,8 +13,9 @@ Route::get('/about', fn () => view('about'))->name('about');
 Route::get('/education', fn () => view('education'))->name('education');
 
 // Pertemuan 10: halaman publik project (menggantikan route /projects yang statis)
+// Pertemuan 11: detail project memakai slug, bukan ID
 Route::get('/projects', [PortfolioController::class, 'projects'])->name('projects');
-Route::get('/projects/{project}', [PortfolioController::class, 'show'])->name('projects.show');
+Route::get('/projects/{project:slug}', [PortfolioController::class, 'show'])->name('projects.show');
 
 Route::get('/profile-saya', fn () => view('profile-saya'))
     ->middleware('auth')

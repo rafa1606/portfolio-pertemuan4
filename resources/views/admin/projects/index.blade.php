@@ -19,8 +19,19 @@
         </div>
     </div>
 
+    <form action="{{ route('admin.projects.index') }}" method="GET" class="filter-bar" role="search">
+        <input type="search" name="search" value="{{ $search }}" placeholder="Cari nama atau deskripsi singkat" aria-label="Cari project" class="form-input">
+        <select name="status" aria-label="Filter status" class="form-input">
+            <option value="">Semua status</option>
+            <option value="published" @selected(request('status') === 'published')>Published</option>
+            <option value="draft" @selected(request('status') === 'draft')>Draft</option>
+        </select>
+        <button type="submit" class="button">Cari</button>
+        <a href="{{ route('admin.projects.index') }}" class="button button-outline">Reset</a>
+    </form>
+
     @if ($projects->isEmpty())
-    <div class="empty-state">Belum ada project.</div>
+    <div class="empty-state">{{ request()->anyFilled(['search', 'status']) ? 'Tidak ada project yang cocok.' : 'Belum ada project.' }}</div>
     @else
     <div class="post-list">
         @foreach ($projects as $project)
@@ -31,7 +42,7 @@
                 @endif
                 <div>
                     <h2>{{ $project->name }}</h2>
-                    <p class="post-card-meta">{{ $project->category->name }} &middot; {{ $project->images_count }} gambar gallery</p>
+                    <p class="post-card-meta">{{ $project->category->name }} &middot; {{ $project->images_count }} gambar gallery @if ($project->is_featured)&middot; Unggulan @endif</p>
                 </div>
             </div>
             <div class="post-card-actions">
@@ -46,6 +57,10 @@
             </div>
         </article>
         @endforeach
+    </div>
+
+    <div class="pagination-wrap">
+        {{ $projects->links() }}
     </div>
     @endif
 </div>

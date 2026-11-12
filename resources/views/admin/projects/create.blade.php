@@ -30,6 +30,10 @@
                 </select>
             </div>
             <div class="form-group">
+                <label class="form-label" for="short_description">Deskripsi singkat</label>
+                <input type="text" name="short_description" id="short_description" value="{{ old('short_description') }}" maxlength="255" class="form-input">
+            </div>
+            <div class="form-group">
                 <label class="form-label" for="description">Deskripsi</label>
                 <textarea name="description" id="description" class="form-input">{{ old('description') }}</textarea>
             </div>
@@ -39,6 +43,35 @@
                     <option value="published" @selected(old('status', 'published') === 'published')>Published</option>
                     <option value="draft" @selected(old('status') === 'draft')>Draft</option>
                 </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="project_date">Tanggal project</label>
+                <input type="date" name="project_date" id="project_date" value="{{ old('project_date') }}" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="check-row" for="is_featured">
+                    <input type="checkbox" name="is_featured" id="is_featured" value="1" @checked(old('is_featured'))>
+                    <span class="form-label" style="margin:0;">Tampilkan sebagai project unggulan</span>
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="project_url">URL project</label>
+                <input type="url" name="project_url" id="project_url" value="{{ old('project_url') }}" placeholder="https://" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="repository_url">URL repository</label>
+                <input type="url" name="repository_url" id="repository_url" value="{{ old('repository_url') }}" placeholder="https://" class="form-input">
+            </div>
+            <div class="form-group">
+                <span class="form-label">Technologies</span>
+                <div class="check-grid">
+                    @foreach ($technologies as $technology)
+                    <label class="check-row">
+                        <input type="checkbox" name="technologies[]" value="{{ $technology->id }}" @checked(in_array($technology->id, array_map('intval', (array) old('technologies', []))))>
+                        <span>{{ $technology->name }}</span>
+                    </label>
+                    @endforeach
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label" for="thumbnail">Thumbnail</label>
