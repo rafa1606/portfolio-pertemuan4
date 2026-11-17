@@ -10,6 +10,7 @@
             <h1>Dashboard</h1>
         </div>
         <div class="post-heading-actions">
+            <a href="{{ route('admin.contacts.index') }}" class="button button-outline">Messages</a>
             <a href="{{ route('admin.skills.index') }}" class="button button-outline">Kelola Skill</a>
             <a href="{{ route('admin.projects.index') }}" class="button">Kelola Project</a>
         </div>
@@ -22,6 +23,8 @@
         <x-stat-card label="Categories" :value="$totalCategories" color="text-purple-600" />
         <x-stat-card label="Technologies" :value="$totalTechnologies" color="text-teal-600" />
         <x-stat-card label="Skills" :value="$totalSkills" color="text-orange-600" />
+        <x-stat-card label="Messages" :value="$totalMessages" color="text-rose-600" />
+        <x-stat-card label="Belum Dibaca" :value="$unreadMessages" color="text-indigo-600" />
     </div>
 
     <div class="panel-grid">
