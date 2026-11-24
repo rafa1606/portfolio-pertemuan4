@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Project;
 use App\Models\Technology;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -31,7 +32,7 @@ class ProjectController extends Controller
                         ->orWhere('short_description', 'like', "%{$search}%");
                 });
             })
-            ->when($status, fn ($query, $status) => $query->where('status', $status))
+            ->when($status, fn($query, $status) => $query->where('status', $status))
             ->latest()
             ->orderByDesc('id') // pembeda urutan kalau created_at sama, supaya paginasi stabil
             ->paginate(10)
@@ -65,6 +66,8 @@ class ProjectController extends Controller
 
         $project = Project::create($validated);
         $project->technologies()->attach($technologies);
+
+        Cache::forget('portfolio.featured');
 
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project berhasil ditambahkan.');
@@ -103,6 +106,8 @@ class ProjectController extends Controller
         $project->update($validated);
         $project->technologies()->sync($technologies); // kosong berarti semua relasi dilepas
 
+        Cache::forget('portfolio.featured');
+
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project berhasil diperbarui.');
     }
@@ -118,6 +123,8 @@ class ProjectController extends Controller
         }
 
         $project->delete(); // baris project_images dan pivot ikut hilang (cascadeOnDelete)
+
+        Cache::forget('portfolio.featured');
 
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project dihapus.');
@@ -142,7 +149,7 @@ class ProjectController extends Controller
             'technologies' => 'nullable|array',
             'technologies.*' => 'exists:technologies,id',
             'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'
-                .'|dimensions:min_width=400,min_height=300',
+                . '|dimensions:min_width=400,min_height=300',
         ];
     }
 
@@ -154,9 +161,10 @@ class ProjectController extends Controller
         $urutan = 2;
 
         while (Project::where('slug', $slug)
-            ->when($abaikanId, fn ($q) => $q->where('id', '!=', $abaikanId))
-            ->exists()) {
-            $slug = $dasar.'-'.$urutan++;
+            ->when($abaikanId, fn($q) => $q->where('id', '!=', $abaikanId))
+            ->exists()
+        ) {
+            $slug = $dasar . '-' . $urutan++;
         }
 
         return $slug;

@@ -118,7 +118,7 @@ return [
     |
     */
 
-    'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-cache-'),
+    'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-cache-'),
 
     /*
     |--------------------------------------------------------------------------
@@ -131,6 +131,11 @@ return [
     |
     */
 
-    'serializable_classes' => false,
+    'serializable_classes' => [
+        \Illuminate\Database\Eloquent\Collection::class,
+        \App\Models\Project::class,
+        \App\Models\Category::class,
+        \App\Models\Skill::class,
+    ],
 
 ];

@@ -10,7 +10,7 @@ use App\Http\Controllers\ProjectGalleryController;
 use App\Http\Controllers\SkillController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => view('home'))->name('home');
+Route::get('/', [PortfolioController::class, 'home'])->name('home');
 Route::get('/about', fn () => view('about'))->name('about');
 Route::get('/education', fn () => view('education'))->name('education');
 
